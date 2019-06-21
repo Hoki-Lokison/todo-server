@@ -1,5 +1,6 @@
 const express = require( "express" );
 const cors = require( "cors" );
+const uuid = require( "uuid" );
 
 
 var server = express( );
@@ -28,4 +29,34 @@ server.get("/todos", function (req, res) {
     todos: data.todos
   };
   res.json(response);
+});
+
+server.post("/todos", function (req, res) {
+  if (req.body.name == undefined) {
+    //They did not send a name for the new todo
+    var response = {
+      msg: "You need to send an item for the To do list in order to create an item."
+    };
+    res.status(400);
+    res.json(response);
+  } else if (req.body.name == "") {
+    //Name was empty
+    var response = {
+      msg: "Please enter a name for the new todo."
+    };
+    res.status(400);
+    res.json(response);
+  } else {
+    // add new todo to the list of todo
+    var new_todo = {
+      id: uuid.v4(),
+      name: req.body.name,
+      completed: false,
+      editing: false,
+      createdOn: new Date(),
+    };
+    data.todos.unshift( new_todo );
+    res.status(201);
+    res.json(response);
+  };
 });
