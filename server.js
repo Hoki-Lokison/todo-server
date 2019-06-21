@@ -60,3 +60,49 @@ server.post("/todos", function (req, res) {
     res.json(response);
   };
 });
+
+
+server.put("/todos/:id", function (req, res) {
+  var bad_request = false;
+  if (req.body.name == undefined && req.body.completed == undefined) {
+    bad_request = true;
+  };
+  if (req.body.name != undefined && req.body.name == "") {
+    bad_request= true;
+  };
+  if (req.body.completed != undefined && typeof( req.body.completed) != "boolean") {
+    bad_request= true;
+  };
+  if (bad_request) {
+    var response = {
+      msg: "Please endter a valid name."
+    };
+    res.status(400);
+    res.json(response);
+  } else {
+    var found = data.todos.some( function (todo) {
+      return todo.id = req.params.id;
+    });
+  };
+
+    if (!found) {
+      var response = {
+        msg: `We could not find a todo with the id of ${req.params.id}`,
+      };
+      res.status(404);
+      res.json(response);
+    } else {
+        data.todo.forEach( function (todo) {
+          if (todo.id == req.params.id) {
+            if (req.body.name != undefined) {
+              todo.name = req.body.name;
+            };
+            if (req.body.completed != undefined) {
+              todo.body.completed == req.body.completed;
+            };
+          };
+        });
+        res.status(404);
+        res.json();
+    };
+  });
